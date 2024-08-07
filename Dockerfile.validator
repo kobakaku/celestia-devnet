@@ -1,0 +1,21 @@
+FROM docker.io/alpine:3.19
+
+ENV CELESTIA_HOME=/root
+
+RUN apk update && apk add --no-cache bash jq
+
+# Copy in the binary
+COPY --from=ghcr.io/celestiaorg/celestia-app:v1.3.0 /bin/celestia-appd /bin/celestia-appd
+
+COPY ./run-validator.sh /opt/entrypoint.sh
+
+# Expose ports:
+# 1317 is the default API server port.
+# 9090 is the default GRPC server port.
+# 26656 is the default node p2p port.
+# 26657 is the default RPC port.
+# 26660 is the port used for Prometheus.
+# 26661 is the port used for tracing.
+EXPOSE 1317 9090 26656 26657 26660 26661
+
+ENTRYPOINT [ "/bin/bash", "/opt/entrypoint.sh" ]
