@@ -4,6 +4,32 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.validator
+    command: ["2"]
+    volumes:
+      - credentials:/credentials
+      - genesis:/genesis
+
+  sequencer-0:
+    image: bridge
+    build:
+      context: .
+      dockerfile: Dockerfile.bridge
+    command: ["0"]
+    ports:
+      - 26658:26658
+    volumes:
+      - credentials:/credentials
+      - genesis:/genesis
+
+  sequencer-1:
+    image: bridge
+    build:
+      context: .
+      dockerfile: Dockerfile.bridge
+    command: ["1"]
+    ports:
+      # remap the default port as it's already used
+      - 36658:26658
     volumes:
       - credentials:/credentials
       - genesis:/genesis
